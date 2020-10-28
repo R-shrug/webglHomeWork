@@ -11,11 +11,13 @@ declare module "../canvas" {
      * @param color 颜色，
      * e.g. cyan [0,255,255,1] or rgb(0,255,255) or #00FFFF 
      * @param mode fill：充满，hollow：镂空
+     * @param primitiveType
      */
     draw2Dimages(
       points: Array<[number, number]>,
       color: string | number[],
-      mode: "fill" | "hollow"
+      mode: "fill" | "hollow",
+      primitiveType?: number
     ): never;
     /**
      * 绘制三角形
@@ -23,12 +25,38 @@ declare module "../canvas" {
      * @param color 颜色，
      * e.g. cyan [0,255,255,1] or rgb(0,255,255) or #00FFFF 
      * @param mode fill：充满，hollow：镂空
+     * @param primitiveType
      */
     drawTriangle(
       points: Array<[number, number]>,
       color: string | number[],
-      mode: "fill" | "hollow"
+      mode: "fill" | "hollow",
+      primitiveType?: number
     ): never;
+    /**
+     * 
+     * @param center 圆心位置
+     * @param majorAxis 长轴长度
+     * @param minorAxis 短轴长度
+     * @param color 颜色，
+     * e.g. cyan [0,255,255,1] or rgb(0,255,255) or #00FFFF 
+     * @param mode fill：充满，hollow：镂空
+     * @param tilt 倾斜弧度
+     * @param startRadian 起始弧度
+     * @param totalRadian 总弧度
+     * @param primitiveType 
+     */
+    drawEllipseSector(
+      center: [number, number],
+      majorAxis: number,
+      minorAxis: number,
+      color: string | number[],
+      mode: "fill" | "hollow",
+      tilt?: number,
+      startRadian?: number,
+      totalRadian?: number,
+      primitiveType?: number
+    ): never
     /**
      * 绘制扇形
      * @param center 圆心位置
@@ -38,6 +66,7 @@ declare module "../canvas" {
      * @param color 颜色，
      * e.g. cyan [0,255,255,1] or rgb(0,255,255) or #00FFFF 
      * @param mode fill：充满，hollow：镂空
+     * @param primitiveType
      */
     drawSector(
       center: [number, number],
@@ -45,7 +74,8 @@ declare module "../canvas" {
       startRadian: number,
       totalRadian: number,
       color: string | number[],
-      mode: "fill" | "hollow"
+      mode: "fill" | "hollow",
+      primitiveType?: number
     ): never
     /**
      * 绘制弧线
@@ -53,17 +83,39 @@ declare module "../canvas" {
      * @param radius 半径长度
      * @param startRadian 起始弧度
      * @param totalRadian 总弧度
+     * @param lineWidth 弧宽
      * @param color 颜色，
      * e.g. cyan [0,255,255,1] or rgb(0,255,255) or #00FFFF 
-     * @param mode fill：充满，hollow：镂空
+     * @param primitiveType
      */
     drawArc(
       center: [number, number],
       radius: number,
       startRadian: number,
       totalRadian: number,
+      lineWidth: number,
       color: string | number[],
-      mode: "fill" | "hollow"
+      primitiveType?: number
+    ): never;
+    /**
+     * 
+     * @param center 圆心位置
+     * @param majorAxis 长轴长度
+     * @param minorAxis 短轴长度
+     * @param color 颜色，
+     * e.g. cyan [0,255,255,1] or rgb(0,255,255) or #00FFFF 
+     * @param mode fill：充满，hollow：镂空
+     * @param tilt 倾斜角
+     * @param primitiveType 
+     */
+    drawEllipse(
+      center: [number, number],
+      majorAxis: number,
+      minorAxis: number,
+      color: string | number[],
+      mode: "fill" | "hollow",
+      tilt?: number,
+      primitiveType?: number
     ): never
     /**
      * 绘制圆形
@@ -72,12 +124,14 @@ declare module "../canvas" {
      * @param color 颜色，
      * e.g. cyan [0,255,255,1] or rgb(0,255,255) or #00FFFF 
      * @param mode fill：充满，hollow：镂空
+     * @param primitiveType
      */
     drawCircle(
       center: [number, number],
       radius: number,
       color: string | number[],
-      mode: "fill" | "hollow"
+      mode: "fill" | "hollow",
+      primitiveType?: number
     ): never;
     /**
      * 绘制矩形
@@ -88,6 +142,7 @@ declare module "../canvas" {
      * @param color 颜色，
      * e.g. cyan [0,255,255,1] or rgb(0,255,255) or #00FFFF  
      * @param mode fill：充满，hollow：镂空
+     * @param primitiveType
      */
     drawRectangle(
       lowerLeft: [number, number],
@@ -95,7 +150,8 @@ declare module "../canvas" {
       upperRight: [number, number],
       upperLeft: [number, number],
       color: string | number[],
-      mode: "fill" | "hollow"
+      mode: "fill" | "hollow",
+      primitiveType?: number
     ): never
   }
 }
@@ -105,7 +161,8 @@ Object.assign(Canvas.prototype, {
     this: Canvas,
     points: Array<[number, number]>,
     color: string | number[],
-    mode: "fill" | "hollow"
+    mode: "fill" | "hollow",
+    primitiveType: number
   ) {
     let { gl } = this
 
@@ -123,7 +180,6 @@ Object.assign(Canvas.prototype, {
       gl_FragColor = u_color;
     }
     `
-
     let program = createProgram(gl, [
       loadShader(gl, vertexShaderSource, gl.VERTEX_SHADER),
       loadShader(gl, fragmentShaderSource, gl.FRAGMENT_SHADER)
@@ -139,16 +195,14 @@ Object.assign(Canvas.prototype, {
 
     attributes.a_position({ size: 2, buffer: positionBuffer })
 
-    uniforms.u_resolution(this.size)
-
     uniforms.u_color(transformRgba(color))
 
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     let positions = new Float32Array(reduceDimension(mapping(this.size, points)))
 
     gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
-
-    let primitiveType = mode === 'fill' ? gl.TRIANGLE_FAN : gl.LINE_STRIP;
+    primitiveType = primitiveType ? primitiveType :
+      (mode === 'fill' ? gl.TRIANGLE_FAN : gl.LINE_LOOP);
     let offset = 0;
     let count = reduceDimension(points).length / 2;
     gl.drawArrays(primitiveType, offset, count);
@@ -157,70 +211,60 @@ Object.assign(Canvas.prototype, {
     this: Canvas,
     points: Array<[number, number]>,
     color: string | number[],
-    mode: "fill" | "hollow"
+    mode: "fill" | "hollow",
+    primitiveType: number
   ) {
-    // this.draw2Dimages(points.concat([points[0]]), color, mode)
-    let { gl } = this
-
-    let vertexShaderSource = `
-    attribute vec4 a_position;
-
-    void main() {
-        gl_Position = a_position;
-    }
-    `
-    let fragmentShaderSource = `
-    precision mediump float;
-    uniform vec4 u_color;
-    void main() {
-      gl_FragColor = u_color;
-    }
-    `
-
-    let program = createProgram(gl, [
-      loadShader(gl, vertexShaderSource, gl.VERTEX_SHADER),
-      loadShader(gl, fragmentShaderSource, gl.FRAGMENT_SHADER)
-    ])
-
-    gl.useProgram(program)
-
-    let uniforms = createUniformSetters(gl, program)
-
-    let attributes = createAttributeSetters(gl, program)
-
-    let positionBuffer = gl.createBuffer()!
-
-    attributes.a_position({ size: 2, buffer: positionBuffer })
-
-    uniforms.u_color(transformRgba(color))
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    let positions = new Float32Array(reduceDimension(mapping(this.size, points)))
-    console.log(this.size,points[0],mapping(this.size, points)[0])
-    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
-
-    let primitiveType = mode === 'fill' ? gl.TRIANGLE_FAN : gl.LINE_LOOP;
-    let offset = 0;
-    let count = reduceDimension(points).length / 2;
-    gl.drawArrays(primitiveType, offset, count);
+    this.draw2Dimages(points.concat([points[0]]), color, mode, primitiveType)
   },
   drawArc(this: Canvas,
     center: [number, number],
     radius: number,
     startRadian: number,
     totalRadian: number,
+    lineWidth: number,
     color: string | number[],
-    mode: "fill" | "hollow") {
-    let points: Array<[number, number]>
-    points = mode === 'fill' ? [center] : []
+    primitiveType: number = this.gl.LINES
+  ) {
+    let points: Array<[number, number]> = []
     const times = 100 * Math.PI * 2 / totalRadian
 
     for (let i = 0; i <= times; i++) {
       points.push([
         center[0] + radius * Math.cos(totalRadian * i / times + startRadian),
         center[1] + radius * Math.sin(totalRadian * i / times + startRadian)])
+      points.push([
+        center[0] + (radius + lineWidth) * Math.cos(totalRadian * i / times + startRadian),
+        center[1] + (radius + lineWidth) * Math.sin(totalRadian * i / times + startRadian)])
     }
-    this.draw2Dimages(points, color, mode)
+    this.drawTriangle(points, color, "fill", primitiveType)
+  },
+  drawEllipseSector(
+    this: Canvas,
+    center: [number, number],
+    majorAxis: number,
+    minorAxis: number,
+    color: string | number[],
+    mode: "fill" | "hollow",
+    tilt: number = 0,
+    startRadian: number = 0,
+    totalRadian: number = Math.PI * 2,
+    primitiveType: number
+  ) {
+    let points: Array<[number, number]>
+    points = mode === 'fill' ? [center] : []
+    const times = 100 * Math.PI * 2 / totalRadian
+    for (let i = 0; i <= times; i++) {
+      let x = majorAxis * Math.cos(totalRadian * i / times + startRadian)
+      let y = minorAxis * Math.sin(totalRadian * i / times + startRadian)
+      points.push([
+        center[0] + x * Math.cos(tilt) + y * Math.sin(tilt),
+        center[1] + x * Math.sin(tilt) - y * Math.cos(tilt)
+      ])
+      // points.push([
+      // center[0] + radius * Math.cos(totalRadian * i / times + startRadian),
+      // center[1] + radius * Math.sin(totalRadian * i / times + startRadian)])
+    }
+    this.drawTriangle(points, color, mode, primitiveType)
   },
   drawSector(
     this: Canvas,
@@ -229,8 +273,10 @@ Object.assign(Canvas.prototype, {
     startRadian: number,
     totalRadian: number,
     color: string | number[],
-    mode: "fill" | "hollow"
+    mode: "fill" | "hollow",
+    primitiveType?: number
   ) {
+    // this.drawEllipseSector(center, radius, radius, color, mode, tilt, startRadian, totalRadian, primitiveType)
     let points: Array<[number, number]>
     points = mode === 'fill' ? [center] : []
     const times = 100 * Math.PI * 2 / totalRadian
@@ -242,24 +288,39 @@ Object.assign(Canvas.prototype, {
     }
     this.drawTriangle(points, color, mode)
   },
+  drawEllipse(
+    this: Canvas,
+    center: [number, number],
+    majorAxis: number,
+    minorAxis: number,
+    color: string | number[],
+    mode: "fill" | "hollow",
+    tilt: number = 0,
+    primitiveType: number
+  ) {
+    this.drawEllipseSector(center, majorAxis, minorAxis, color, mode, tilt, 0, Math.PI * 2, primitiveType)
+    // let points: Array<[number, number]>
+    // points = mode === 'fill' ? [center] : []
+    // const times = 100
+    // for (let i = 0; i <= times; i++) {
+    //   let x = majorAxis * Math.cos(Math.PI * 2 * i / times)
+    //   let y = minorAxis * Math.sin(Math.PI * 2 * i / times)
+    //   points.push([
+    //     center[0] + x * Math.cos(tilt) + y * Math.sin(tilt),
+    //     center[1] + x * Math.sin(tilt) - y * Math.cos(tilt)
+    //   ])
+    // }
+    // this.drawTriangle(points, color, mode, primitiveType)
+  },
   drawCircle(
     this: Canvas,
     center: [number, number],
     radius: number,
     color: string | number[],
-    mode: "fill" | "hollow"
+    mode: "fill" | "hollow",
+    primitiveType: number
   ) {
-    // let points: Array<[number, number]>
-    // points = mode === 'fill' ? [center] : []
-    // const times = 100
-
-    // for (let i = 0; i <= times; i++) {
-    //   points.push([
-    //     center[0] + radius * Math.cos(2 * Math.PI * i / times),
-    //     center[1] + radius * Math.sin(2 * Math.PI * i / times)])
-    // }
-    // this.drawTriangle(points, color, mode)
-    this.drawSector(center, radius, 0, Math.PI * 2, color, mode)
+    this.drawSector(center, radius, 0, Math.PI * 2, color, mode, primitiveType)
   },
   drawRectangle(
     this: Canvas,
@@ -268,13 +329,11 @@ Object.assign(Canvas.prototype, {
     upperRight: [number, number],
     upperLeft: [number, number],
     color: string | number[],
-    mode: "fill" | "hollow"
+    mode: "fill" | "hollow",
+    primitiveType: number
   ) {
     let points: Array<[number, number]> = [lowerLeft, upperLeft, upperRight, lowerRight]
-    // mode === 'fill' ?
-    //   [lowerLeft, upperRight, upperLeft, lowerRight] :
-    //   [lowerLeft, upperLeft, upperRight, lowerRight]
-    this.drawTriangle(points, color, mode)
+    this.drawTriangle(points, color, mode, primitiveType)
   }
 }
 )
