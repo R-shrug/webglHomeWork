@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "hw1":"npx parcel src/hw1/index.html"
+    "hw1": "npx parcel src/hw1/index.html"
   },
   "dependencies": {
     "parcel": "^1.12.4",
