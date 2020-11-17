@@ -167,10 +167,16 @@ Object.assign(Canvas.prototype, {
     let { gl } = this
 
     let vertexShaderSource = `
-    attribute vec4 a_position;
-
+    attribute vec2 a_position;
+    uniform vec2 u_resolution;
     void main() {
-        gl_Position = a_position;
+       vec2 zeroToOne = a_position / u_resolution;
+    
+       vec2 zeroToTwo = zeroToOne * 2.0;
+    
+       vec2 clipSpace = zeroToTwo - 1.0;
+    
+       gl_Position = vec4(clipSpace, 0, 1);
     }
     `
     let fragmentShaderSource = `
@@ -196,9 +202,9 @@ Object.assign(Canvas.prototype, {
     attributes.a_position({ size: 2, buffer: positionBuffer })
 
     uniforms.u_color(transformRgba(color))
-
+    uniforms.u_resolution(this.size)
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    let positions = new Float32Array(reduceDimension(mapping(this.size, points)))
+    let positions = new Float32Array(reduceDimension(points))
 
     gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
     primitiveType = primitiveType ? primitiveType :
