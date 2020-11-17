@@ -1,7 +1,7 @@
 import { Canvas } from "../canvas"
 import { createProgram, loadShader, createUniformSetters, createAttributeSetters } from "../WebGlUtils"
 import { transformRgba, reduceDimension, mapping } from "../tool"
-
+import { vec2 } from "../type"
 
 declare module "../canvas" {
   interface Canvas {
@@ -14,7 +14,7 @@ declare module "../canvas" {
      * @param primitiveType
      */
     draw2Dimages(
-      points: Array<[number, number]>,
+      points: Array<vec2>,
       color: string | number[],
       mode: "fill" | "hollow",
       primitiveType?: number
@@ -28,7 +28,7 @@ declare module "../canvas" {
      * @param primitiveType
      */
     drawTriangle(
-      points: Array<[number, number]>,
+      points: Array<vec2>,
       color: string | number[],
       mode: "fill" | "hollow",
       primitiveType?: number
@@ -47,7 +47,7 @@ declare module "../canvas" {
      * @param primitiveType 
      */
     drawEllipseSector(
-      center: [number, number],
+      center: vec2,
       majorAxis: number,
       minorAxis: number,
       color: string | number[],
@@ -69,7 +69,7 @@ declare module "../canvas" {
      * @param primitiveType
      */
     drawSector(
-      center: [number, number],
+      center: vec2,
       radius: number,
       startRadian: number,
       totalRadian: number,
@@ -89,7 +89,7 @@ declare module "../canvas" {
      * @param primitiveType
      */
     drawArc(
-      center: [number, number],
+      center: vec2,
       radius: number,
       startRadian: number,
       totalRadian: number,
@@ -109,7 +109,7 @@ declare module "../canvas" {
      * @param primitiveType 
      */
     drawEllipse(
-      center: [number, number],
+      center: vec2,
       majorAxis: number,
       minorAxis: number,
       color: string | number[],
@@ -127,7 +127,7 @@ declare module "../canvas" {
      * @param primitiveType
      */
     drawCircle(
-      center: [number, number],
+      center: vec2,
       radius: number,
       color: string | number[],
       mode: "fill" | "hollow",
@@ -145,10 +145,10 @@ declare module "../canvas" {
      * @param primitiveType
      */
     drawRectangle(
-      lowerLeft: [number, number],
-      lowerRight: [number, number],
-      upperRight: [number, number],
-      upperLeft: [number, number],
+      lowerLeft: vec2,
+      lowerRight: vec2,
+      upperRight: vec2,
+      upperLeft: vec2,
       color: string | number[],
       mode: "fill" | "hollow",
       primitiveType?: number
@@ -159,7 +159,7 @@ declare module "../canvas" {
 Object.assign(Canvas.prototype, {
   draw2Dimages(
     this: Canvas,
-    points: Array<[number, number]>,
+    points: Array<vec2>,
     color: string | number[],
     mode: "fill" | "hollow",
     primitiveType: number
@@ -215,7 +215,7 @@ Object.assign(Canvas.prototype, {
   },
   drawTriangle(
     this: Canvas,
-    points: Array<[number, number]>,
+    points: Array<vec2>,
     color: string | number[],
     mode: "fill" | "hollow",
     primitiveType: number
@@ -223,7 +223,7 @@ Object.assign(Canvas.prototype, {
     this.draw2Dimages(points.concat([points[0]]), color, mode, primitiveType)
   },
   drawArc(this: Canvas,
-    center: [number, number],
+    center: vec2,
     radius: number,
     startRadian: number,
     totalRadian: number,
@@ -231,7 +231,7 @@ Object.assign(Canvas.prototype, {
     color: string | number[],
     primitiveType: number = this.gl.LINES
   ) {
-    let points: Array<[number, number]> = []
+    let points: Array<vec2> = []
     const times = 100 * Math.PI * 2 / totalRadian
 
     for (let i = 0; i <= times; i++) {
@@ -246,7 +246,7 @@ Object.assign(Canvas.prototype, {
   },
   drawEllipseSector(
     this: Canvas,
-    center: [number, number],
+    center: vec2,
     majorAxis: number,
     minorAxis: number,
     color: string | number[],
@@ -256,7 +256,7 @@ Object.assign(Canvas.prototype, {
     totalRadian: number = Math.PI * 2,
     primitiveType: number
   ) {
-    let points: Array<[number, number]>
+    let points: Array<vec2>
     points = mode === 'fill' ? [center] : []
     const times = 100 * Math.PI * 2 / totalRadian
     for (let i = 0; i <= times; i++) {
@@ -274,7 +274,7 @@ Object.assign(Canvas.prototype, {
   },
   drawSector(
     this: Canvas,
-    center: [number, number],
+    center: vec2,
     radius: number,
     startRadian: number,
     totalRadian: number,
@@ -283,7 +283,7 @@ Object.assign(Canvas.prototype, {
     primitiveType?: number
   ) {
     // this.drawEllipseSector(center, radius, radius, color, mode, tilt, startRadian, totalRadian, primitiveType)
-    let points: Array<[number, number]>
+    let points: Array<vec2>
     points = mode === 'fill' ? [center] : []
     const times = 100 * Math.PI * 2 / totalRadian
 
@@ -296,7 +296,7 @@ Object.assign(Canvas.prototype, {
   },
   drawEllipse(
     this: Canvas,
-    center: [number, number],
+    center: vec2,
     majorAxis: number,
     minorAxis: number,
     color: string | number[],
@@ -305,7 +305,7 @@ Object.assign(Canvas.prototype, {
     primitiveType: number
   ) {
     this.drawEllipseSector(center, majorAxis, minorAxis, color, mode, tilt, 0, Math.PI * 2, primitiveType)
-    // let points: Array<[number, number]>
+    // let points: Array<vec2>
     // points = mode === 'fill' ? [center] : []
     // const times = 100
     // for (let i = 0; i <= times; i++) {
@@ -320,7 +320,7 @@ Object.assign(Canvas.prototype, {
   },
   drawCircle(
     this: Canvas,
-    center: [number, number],
+    center: vec2,
     radius: number,
     color: string | number[],
     mode: "fill" | "hollow",
@@ -330,15 +330,15 @@ Object.assign(Canvas.prototype, {
   },
   drawRectangle(
     this: Canvas,
-    lowerLeft: [number, number],
-    lowerRight: [number, number],
-    upperRight: [number, number],
-    upperLeft: [number, number],
+    lowerLeft: vec2,
+    lowerRight: vec2,
+    upperRight: vec2,
+    upperLeft: vec2,
     color: string | number[],
     mode: "fill" | "hollow",
     primitiveType: number
   ) {
-    let points: Array<[number, number]> = [lowerLeft, upperLeft, upperRight, lowerRight]
+    let points: Array<vec2> = [lowerLeft, upperLeft, upperRight, lowerRight]
     this.drawTriangle(points, color, mode, primitiveType)
   }
 }
