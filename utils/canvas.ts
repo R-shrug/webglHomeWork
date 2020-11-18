@@ -22,7 +22,7 @@ export class Canvas {
 
   public render() {
     this.gl.viewport(0, 0, ...this.size);
-
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+    this.gl.enable(this.gl.DEPTH_TEST)
+    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
   }
 }

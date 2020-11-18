@@ -25,3 +25,11 @@ export function transformRgba(rgba: number[] | string): number[] {
 export function mapping(size: [number, number], points: Array<[number, number]>): Array<[number, number]> {
   return points.map(Element => [Element[0] / size[0] * 2 - 1, Element[1] / size[1] * 2 - 1])
 }
+
+export function radToDeg(r: number) {
+  return r * 180 / Math.PI;
+}
+
+export function degToRad(d: number) {
+  return d * Math.PI / 180;
+}
