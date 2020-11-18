@@ -1,4 +1,6 @@
-export function reduceDimension(arr: Array<[number, number]>) {
+import { vec2, vec3 } from "./type";
+
+export function reduceDimension(arr: Array<vec2> | Array<vec3>) {
   return Array.prototype.concat.apply([], arr);
 }
 
