@@ -92,13 +92,13 @@ export class Dragonz extends Container {
     const n = now * 10
     const { leftWing, rightWing, leg, head, body } = this
 
-    this.position.set(0, 0, Math.sin(n / 5 + radius * 3) / 2 - 1)
-    leg.rotation.setFromAxisAngle(Yunit, Math.sin(Math.PI * n / 10) / 5)
-    leg.position.set(-Math.sin(Math.PI * n / 10) / 5, 0, -1.42)
-    leftWing.position.set(0, -(1.25 + Math.sin(n / 10) * 0), 0.55 - Math.sin(n / 10) * 0.22)
-    leftWing.rotation.setFromAxisAngle(Xunit, Math.PI * 3 / 8 + Math.PI / 8 * Math.sin(n / 10))
-    rightWing.position.set(0, (1.25 + Math.sin(n / 10) * 0), 0.55 - Math.sin(n / 10) * 0.22)
-    rightWing.rotation.setFromAxisAngle(Xunit, -(Math.PI * 3 / 8 + Math.PI / 8 * Math.sin(n / 10)))
+    this.position.set(0, 0, Math.sin(Math.PI * n / 12) / 2 - 1)
+    leg.rotation.setFromAxisAngle(Yunit, Math.sin(Math.PI * n / 12) / 5)
+    leg.position.set(-Math.sin(Math.PI * n / 12) / 5, 0, -1.42)
+    leftWing.position.set(0, -(1.25 + Math.sin(Math.PI * n / 12) * 0), 0.55 - Math.sin(Math.PI * n / 12) * 0.22)
+    leftWing.rotation.setFromAxisAngle(Xunit, Math.PI * 3 / 8 + Math.PI / 8 * Math.sin(Math.PI * n / 12))
+    rightWing.position.set(0, (1.25 + Math.sin(Math.PI * n / 12) * 0), 0.55 - Math.sin(Math.PI * n / 12) * 0.22)
+    rightWing.rotation.setFromAxisAngle(Xunit, -(Math.PI * 3 / 8 + Math.PI / 8 * Math.sin(Math.PI * n / 12)))
     this.setTransformDirty()
   }
 
