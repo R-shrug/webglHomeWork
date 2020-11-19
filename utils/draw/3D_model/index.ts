@@ -1,5 +1,5 @@
 import { Canvas } from "../../canvas"
-import { createProgram, loadShader, createUniformSetters, createAttributeSetters } from "../../WebGlUtils"
+import { createProgram, loadShader, createUniformSetters, createAttributeSetters } from "../../helpers/WebGlUtils"
 import { transformRgba, reduceDimension, mapping } from "../../tool"
 import { vec3 } from "../../type"
 import { makeScale, makeTranslation, makeXRotation, makeYRotation, makeZRotation, makeZToWMatrix, transition } from "./matrix"

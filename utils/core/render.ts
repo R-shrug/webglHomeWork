@@ -4,9 +4,9 @@ import { RenderTarget } from "./renderTarget"
 
 export type RenderContext = {
   camera: Camera
-  light?: Camera
+  light: Camera
 
-  shadowTexture?: WebGLTexture
+  shadowTexture: WebGLTexture | null
 }
 
 export abstract class RendererPlugin {

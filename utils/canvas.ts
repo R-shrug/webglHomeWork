@@ -1,4 +1,4 @@
-import { createProgram, loadShader, createUniformSetters, createAttributeSetters } from "./WebGlUtils"
+import { createProgram, loadShader, createUniformSetters, createAttributeSetters } from "./helpers/WebGlUtils"
 import { reduceDimension, transformRgba } from "./tool"
 export class Canvas {
 

@@ -1,43 +1,38 @@
 import { RendererPlugin, RegisterPlugin, RenderContext } from "../core/render"
 import { DisplayObject } from "../core/displayObject"
 import { createProgram, loadShader, createUniformSetters, createAttributeSetters, AttributeInfo } from "../helpers/WebGlUtils"
-import { Color } from "../math/Color"
 import { BindableBuffer } from "../core/bindableBuffer"
 
 const vert = `
 attribute vec3 aPosition;
 
-varying vec3 vColor;
-
-uniform mat4 uView;
+uniform mat4 uLightMat;
 uniform mat4 uWorld;
-uniform vec3 uColor;
 
 void main() {
-  gl_Position = uView * uWorld * vec4(aPosition, 1);
-  vColor = uColor;
+    gl_Position = uLightMat * uWorld * vec4(aPosition, 1.0);
 }`
 
 const frag = `
 precision mediump float;
 
-varying vec3 vColor;
- 
+uniform vec3 uColor;
+
 void main() {
-  gl_FragColor = vec4(vColor.rgb, 1.0);
+    gl_FragColor = vec4(uColor, 1.0);
 }`
 
-export interface ISolidFaceObject extends DisplayObject {
-  plugin: "SolidFacePlugin"
+export interface IShadowTexureObject extends DisplayObject {
   data: {
     positionBuffer: BindableBuffer,
     points: number
-  }
+  },
+  shadowRender: boolean
 }
 
-export class SolidFacePlugin extends RendererPlugin {
+export class ShadowTexurePlugin extends RendererPlugin {
 
-  static readonly PluginName = "SolidFacePlugin" as "SolidFacePlugin"
+  static readonly PluginName = "ShadowTexurePlugin" as "ShadowTexurePlugin"
 
   constructor(gl: WebGLRenderingContext) {
     super(gl)
@@ -58,22 +53,22 @@ export class SolidFacePlugin extends RendererPlugin {
   uniforms: Record<string, (v: any) => void>
   attributes: Record<string, (b: AttributeInfo) => void>
 
-  renderObject(object: ISolidFaceObject, { camera }: RenderContext) {
+  renderObject(object: IShadowTexureObject, { light }: RenderContext) {
+    if (!object.shadowRender) return
+
     const { gl } = this
     gl.useProgram(this.program)
 
-    this.uniforms.uView(camera.viewTransformMatrix.toArray(new Float32Array(16)))
-    this.uniforms.uWorld(object.transform.toArray(new Float32Array(16)))
-    const color = object.color || new Color()
-    this.uniforms.uColor(color.toArray(new Float32Array(3)))
-
     object.data.positionBuffer.update(gl)
     if (!object.data.positionBuffer.buffer) throw new Error("empty Buffer")
-
     this.attributes.aPosition({ size: 3, buffer: object.data.positionBuffer.buffer })
+
+    this.uniforms.uLightMat(light.viewTransformMatrix.toArray(new Float32Array(16)))
+    this.uniforms.uWorld(object.viewTransform.toArray(new Float32Array(16)))
+    this.uniforms.uColor(new Float32Array([0, 1, 1]))
 
     gl.drawArrays(gl.TRIANGLES, 0, object.data.points)
   }
 }
 
-RegisterPlugin(SolidFacePlugin.PluginName, SolidFacePlugin)
+RegisterPlugin(ShadowTexurePlugin.PluginName, ShadowTexurePlugin)

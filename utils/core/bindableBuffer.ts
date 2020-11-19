@@ -5,7 +5,7 @@ export class BindableBuffer<T extends ArrayBuffer = ArrayBuffer> {
   dirty = true
 
   constructor(
-    public arrayBuffer?: T, public gl?: WebGLRenderingContext) {
+    public arrayBuffer: T, public gl?: WebGLRenderingContext) {
   }
 
   buffer: WebGLBuffer | null = null
