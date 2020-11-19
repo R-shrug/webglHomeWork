@@ -25,9 +25,9 @@ export class DisplayObject {
   private _colorDirty = true
   get colorDirty() { return this._colorDirty }
 
-  worldColor = new Color()
+  parent?: Container
 
-  parent?: Containter
+  plugin: string = ''
 
   setTransformDirty() {
     this._transformDirty = true
@@ -51,27 +51,12 @@ export class DisplayObject {
 
     this._transformDirty = false
   }
-
-  updateColor() {
-    if (!this._colorDirty) return
-    if (this.parent) {
-      this.worldColor = this.color.clone().multiply(this.parent.worldColor)
-    } else {
-      this.worldColor = this.color.clone()
-    }
-    this._colorDirty = false
-  }
-
-  getWorldPosition() {
-    this.updateTransform()
-    return new Vector3().applyMatrix4(this.viewTransform)
-  }
 }
 
-export class Containter extends DisplayObject {
-  children: DisplayObject[] = []
+export class Container extends DisplayObject {
+  children: Array<DisplayObject> = []
 
-  addChild(...objs: DisplayObject[]) {
+  addChild(...objs: Array<DisplayObject>) {
     objs.forEach(c => {
       if (c.parent) {
         if (c.parent === this) return
@@ -83,7 +68,7 @@ export class Containter extends DisplayObject {
     })
   }
 
-  removeChild(...objs: DisplayObject[]) {
+  removeChild(...objs: Array<DisplayObject>) {
     objs.forEach(c => {
       if (c.parent !== this) return
       c.parent = undefined
@@ -101,11 +86,6 @@ export class Containter extends DisplayObject {
   setTransformDirty() {
     super.setTransformDirty()
     this.children.forEach(c => c.setTransformDirty())
-  }
-
-  updateColor() {
-    super.updateColor()
-    this.children.forEach(c => c.updateColor())
   }
 
   updateTransform() {
