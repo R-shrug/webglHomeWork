@@ -11,8 +11,11 @@ export class DisplayObject {
   position = new Vector3()
   color = new Color()
 
+  // 旋转
   rotation = new Quaternion()
+  // 伸缩
   scale = new Vector3(1, 1, 1)
+  // 平移
   transform = new Matrix4()
 
   private _transformDirty = true
@@ -20,6 +23,8 @@ export class DisplayObject {
 
   // 视图矩阵及其逆的转制
   viewTransform = new Matrix4()
+
+  
   viewTransformInvTrans = new Matrix4()
 
   private _colorDirty = true
@@ -39,7 +44,7 @@ export class DisplayObject {
 
   updateTransform() {
     if (!this.visible || !this._transformDirty) return
-
+    // 模型矩阵生成
     this.transform.compose(this.position, this.rotation, this.scale)
 
     if (this.parent) {

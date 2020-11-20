@@ -1,9 +1,9 @@
 import { Container, DisplayObject } from "../../utils/core/displayObject";
 import { TextureBase } from "../../utils/core/texture";
-import { LoadImageAsync } from "../../utils/helpers/asyncLoad";
-import { Vector3 } from "../../utils/math/Vector3";
 import { TextureSphereObject } from "../../utils/plugins/TextureSphere";
+import { LoadImageAsync } from "../../utils/helpers/asyncLoad";
 import { SphereObject } from "../../utils/shapes/Sphere";
+import { Vector3 } from "../../utils/math/Vector3";
 import headSrc from "../assets/skin.png"
 
 function wrapContainer(obj: DisplayObject | (() => DisplayObject)) {
@@ -38,12 +38,10 @@ export class Dragonz extends Container {
     this.leftWing.scale.set(0.25, 0.25, 0.8)
     this.leftWing.color.set(0x619ebf)
 
-
     this.rightWing = new SphereObject()
     this.rightWing.position.set(0, 1.25, 0.55)
     this.rightWing.scale.set(0.25, 0.25, 0.8)
     this.rightWing.color.set(0x619ebf)
-
 
     this.leg = new SphereObject()
     this.leg.position.set(0.2, 0, -1.42)
@@ -90,7 +88,7 @@ export class Dragonz extends Container {
   animate(now: number, radius = 3) {
     if (!this.inited) return
     const n = now * 10
-    const { leftWing, rightWing, leg, head, body } = this
+    const { leftWing, rightWing, leg } = this
 
     this.position.set(0, 0, Math.sin(Math.PI * n / 12) / 2 - 1)
     leg.rotation.setFromAxisAngle(Yunit, Math.sin(Math.PI * n / 12) / 5)
