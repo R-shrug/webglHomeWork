@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "hw1": "npm install && npx parcel src/hw1/index.html",
-    "hw2": "npm install && npx parcel src/hw2/index.html"
+    "hw1": "npx parcel src/hw1/index.html",
+    "hw2": "npx parcel src/hw2/index.html"
   },
   "dependencies": {
     "parcel": "^1.12.4",
