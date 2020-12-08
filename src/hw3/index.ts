@@ -28,7 +28,7 @@ async function main() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     const stage = new Container()
-    const camera = new ControlledCamera(canvas)
+    const camera = new ControlledCamera(canvas, false)
 
     const lightBall = new LightBall(gl)
 
@@ -39,7 +39,7 @@ async function main() {
     const light = new Camera()
         .setViewPort(1, 0.5 * Math.PI)
         .setPosition(12, 0, 0)
-        .setLookAt(12, 0, 0)
+        .setLookAt(0, 0, 0)
 
     const earthTexture = new TextureBase(gl, await LoadImageAsync(earthSrc))
 
@@ -64,10 +64,11 @@ async function main() {
             camera.setViewPort(canvas.width / canvas.height)
 
         let speed = document.getElementById("speed")
-        lightBall.animate(dt,speed.value)
-        light.position.set(20*lightBall.sun.position.x,20*lightBall.sun.position.y, lightBall.position.z)
-        document.body.style.backgroundImage="linear-gradient(-"+lightBall.theta/(2*Math.PI)*360+"deg, #22a6f1,black 50%)"
-        console.log("linear-gradient("+(0-lightBall.theta/(2*Math.PI)*360)+"deg, #22a6f1,black 50%)")
+        lightBall.animate(dt, speed.value)
+        light.position.set(20 * lightBall.sun.position.x, 20 * lightBall.sun.position.y, lightBall.position.z)
+        // light.setLookAt(20 * lightBall.sun.position.x, 20 * lightBall.sun.position.y, lightBall.position.z)
+        document.body.style.backgroundImage = "linear-gradient(-" + lightBall.theta / (2 * Math.PI) * 360 + "deg, #cdd1d3,#1677b3,#131824 55%,#0B1013)"
+        console.log("linear-gradient(" + (0 - lightBall.theta / (2 * Math.PI) * 360) + "deg, #22a6f1,black 50%)")
         camera.update(dt)
         prev = now
     }

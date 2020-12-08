@@ -99,7 +99,7 @@ export interface ICommonShadowObject extends DisplayObject, IShadowTexureObject 
 
 const defaultMaterial = {
   specular: 0.8,
-  diffuse: 5,
+  diffuse: 4,
   ambient: 0.8,
 }
 
