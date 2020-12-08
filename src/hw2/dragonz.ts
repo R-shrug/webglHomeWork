@@ -89,7 +89,6 @@ export class Dragonz extends Container {
     if (!this.inited) return
     const n = now * 10
     const { leftWing, rightWing, leg } = this
-
     this.position.set(0, 0, Math.sin(Math.PI * n / 12) / 2 - 1)
     leg.rotation.setFromAxisAngle(Yunit, Math.sin(Math.PI * n / 12) / 5)
     leg.position.set(-Math.sin(Math.PI * n / 12) / 5, 0, -1.42)

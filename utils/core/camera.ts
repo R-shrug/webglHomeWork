@@ -10,7 +10,7 @@ export class Camera {
   rotation = new Quaternion()
   position = new Vector3()
   projection = new Matrix4()
-
+  target = new Vector3(0, 0, 0)
 
   setViewPort(aspect: number, viewRange?: number, far = 100) {
     if (!viewRange || viewRange <= 0)
@@ -39,8 +39,8 @@ export class Camera {
   }
 
   setLookAt(x: number | Vector3, y?: number, z?: number) {
-    const target = typeof x === "number" ? new Vector3(x, y, z) : x
-    this.rotation.setFromRotationMatrix(new Matrix4().lookAt(this.position, target, UpVector))
+    this.target = typeof x === "number" ? new Vector3(x, y, z) : x
+    this.rotation.setFromRotationMatrix(new Matrix4().lookAt(this.position, this.target, UpVector))
     this.setTransformDirty()
     return this
   }
@@ -67,7 +67,7 @@ export class Camera {
 }
 
 export class ControlledCamera extends Camera {
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement, movable: boolean) {
     super()
     this.input = new BaseInputHandler(canvas)
     this.input.keyEvent.add((state: any, event: any) => {
@@ -80,8 +80,9 @@ export class ControlledCamera extends Camera {
         case "shift": this.state.down = state === "down"; break
       }
     })
+    this.movable = movable
   }
-
+  movable: boolean
   input: BaseInputHandler
 
   state = {
@@ -94,29 +95,53 @@ export class ControlledCamera extends Camera {
   }
 
   lastMousePosition: { x: number, y: number } | null = null
+  totalMousePosition: { x: number, y: number } = { x: 0, y: 0 }
 
   update(seconds: number) {
-    const front = new Vector3(0, 0, -1).applyQuaternion(this.rotation).setZ(0).normalize()
-    const up = new Vector3(0, 0, 1)
-    const left = up.clone().cross(front)
+    if (this.movable) {
+      const front = new Vector3(0, 0, -1).applyQuaternion(this.rotation).setZ(0).normalize()
+      const up = new Vector3(0, 0, 1)
+      const left = up.clone().cross(front)
+      this.position.addScaledVector(front, (<any>this.state.front - <any>this.state.back) * seconds * 10)
+      this.position.addScaledVector(up, (<any>this.state.up - <any>this.state.down) * seconds * 10)
+      this.position.addScaledVector(left, (<any>this.state.left - <any>this.state.right) * seconds * 10)
 
-    this.position.addScaledVector(front, (<any>this.state.front - <any>this.state.back) * seconds * 10)
-    this.position.addScaledVector(up, (<any>this.state.up - <any>this.state.down) * seconds * 10)
-    this.position.addScaledVector(left, (<any>this.state.left - <any>this.state.right) * seconds * 10)
-
-    if (this.input.state.rightholding) {
-      if (this.lastMousePosition) {
-        const dx = this.input.state.x - this.lastMousePosition.x
-        const dy = this.input.state.y - this.lastMousePosition.y
-        this.rotation.multiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), -dx / 300))
-        this.rotation.multiply(new Quaternion().setFromAxisAngle(new Vector3(1, 0, 0), -dy / 300))
-        this.rotation.setFromRotationMatrix(
-          new Matrix4().lookAt(
-            this.position, new Vector3(0, 0, -1).applyQuaternion(this.rotation).add(this.position), up))
+      if (this.input.state.rightholding) {
+        if (this.lastMousePosition) {
+          const dx = this.input.state.x - this.lastMousePosition.x
+          const dy = this.input.state.y - this.lastMousePosition.y
+          this.rotation.multiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), -dx / 300))
+          this.rotation.multiply(new Quaternion().setFromAxisAngle(new Vector3(1, 0, 0), -dy / 300))
+          this.rotation.setFromRotationMatrix(
+            new Matrix4().lookAt(
+              this.position, new Vector3(0, 0, -1).applyQuaternion(this.rotation).add(this.position), up))
+        }
+        this.lastMousePosition = { ...this.input.state }
+      } else {
+        this.lastMousePosition = null
       }
-      this.lastMousePosition = { ...this.input.state }
     } else {
-      this.lastMousePosition = null
+      const front = new Vector3(0, 0, -1).applyQuaternion(this.rotation).setZ(0).normalize()
+      const up = new Vector3(0, 0, 1)
+      const left = up.clone().cross(front)
+      this.position.applyAxisAngle(new Vector3(0, 0, 1), (<any>this.state.left - <any>this.state.right) * seconds * 10)
+      this.position.applyAxisAngle(new Vector3(0, 1, 0), -(<any>this.state.up - <any>this.state.down) * seconds * 10)
+      console.log(this.position.toArray())
+      if (((this.position.x - this.target.x) ** 2 + (this.position.y - this.target.y) ** 2 > 9) || (<any>this.state.front - <any>this.state.back) < 0)
+        this.position.addScaledVector(front, (<any>this.state.front - <any>this.state.back) * seconds * 100)
+      if (this.input.state.rightholding) {
+        if (this.lastMousePosition) {
+          const dx = this.input.state.x - this.lastMousePosition.x
+          const dy = this.input.state.y - this.lastMousePosition.y
+          this.position.applyAxisAngle(new Vector3(0, 0, 1), -dx / 150)
+          this.position.applyAxisAngle(new Vector3(0, 1, 0), -dy / 150)
+          console.log(this.position)
+        }
+        this.lastMousePosition = { ...this.input.state }
+      } else {
+        this.lastMousePosition = null
+      }
+      this.setLookAt(this.target)
     }
     this.setTransformDirty()
   }

@@ -24,7 +24,7 @@ async function main() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   const stage = new Container()
-  const camera = new ControlledCamera(canvas)
+  const camera = new ControlledCamera(canvas, false)
 
   const dragon = new Dragonz(gl)
 
@@ -33,7 +33,7 @@ async function main() {
   camera
     .setViewPort(canvas.width / canvas.height)
     .setPosition(9, 12, 1)
-    .setLookAt(1, 4, 2)
+    .setLookAt(1, 1, 1)
   const light = new Camera()
     .setViewPort(1, 0.8 * Math.PI)
     .setPosition(9, 12, 5)
