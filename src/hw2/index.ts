@@ -62,6 +62,9 @@ async function main() {
     shadowTexture: depthtarget.texture
   }
 
+
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+
   function tick(now: number) {
     requestAnimationFrame(tick)
     update(now)

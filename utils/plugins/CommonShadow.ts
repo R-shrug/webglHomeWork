@@ -98,9 +98,9 @@ export interface ICommonShadowObject extends DisplayObject, IShadowTexureObject 
 }
 
 const defaultMaterial = {
-  specular: 0.2,
-  diffuse: 0.7,
-  ambient: 0.3,
+  specular: 0.8,
+  diffuse: 5,
+  ambient: 0.8,
 }
 
 export class CommonShadowPlugin extends RendererPlugin {
