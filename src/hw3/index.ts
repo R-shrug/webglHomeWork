@@ -34,25 +34,32 @@ async function main() {
 
     camera
         .setViewPort(canvas.width / canvas.height)
-        .setPosition(0, 0, 20)
-        .setLookAt(0, 0, 0)
+        .setPosition(9, 12, 11)
+        .setLookAt(1, 1, 1)
     const light = new Camera()
         .setViewPort(1, 0.5 * Math.PI)
         .setPosition(12, 0, 0)
         .setLookAt(0, 0, 0)
+    const light1 = new Camera()
+    .setViewPort(1, 0.5 * Math.PI)
+    .setPosition(12, 0, 0)
+    .setLookAt(0, 0, 0) 
 
     const earthTexture = new TextureBase(gl, await LoadImageAsync(earthSrc))
 
     let ball = new TextureSphereObject(earthTexture)
 
     ball.position.set(0, 0, 0)
-    ball.scale.set(7, 7, 7)
+    ball.scale.set(1, 1, 1)
     ball.color.set(0x4cd1e0)
+    ball.material.specular = 1
+    ball.material.ambient = 0.7
+    ball.material.diffuse=4
 
     let sun = new SphereObject()
 
     sun.position.set(10, 10, 0)
-    sun.scale.set(0.2, 0.2, 0.2)
+    sun.scale.set(6, 6, 6)
     sun.color.set(0xe2c074)
 
     let prev = performance.now() / 1000
@@ -63,7 +70,7 @@ async function main() {
         if (resizeCanvas(gl, canvas))
             camera.setViewPort(canvas.width / canvas.height)
 
-        let speed = document.getElementById("speed")
+        let speed = <HTMLInputElement>document.getElementById("speed")
         lightBall.animate(dt, speed.value)
         light.position.set(20 * lightBall.sun.position.x, 20 * lightBall.sun.position.y, lightBall.position.z)
         // light.setLookAt(20 * lightBall.sun.position.x, 20 * lightBall.sun.position.y, lightBall.position.z)

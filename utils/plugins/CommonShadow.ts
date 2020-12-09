@@ -44,6 +44,7 @@ uniform vec3 uColor;
 uniform float uSpecular;
 uniform float uDiffuse;
 uniform float uAmbient;
+uniform float uShiness;
 uniform bool uHasTexure;
 
 bool isLighted() {
@@ -62,9 +63,10 @@ void main() {
     float diffuse = dot(normal, normalize(objToLight));
     if (diffuse < 0.0) diffuse = - diffuse * 0.05;
 
+
     float specular = dot(normal, normalize(normalize(objToLight) + normalize(objToCamera)));
     if (specular < 0.0) specular = 0.0;
-    else specular = pow(specular, 100.0);
+    else specular = pow(specular,80.0);
 
     bool lighted = isLighted();
 
@@ -93,14 +95,17 @@ export interface ICommonShadowObject extends DisplayObject, IShadowTexureObject 
     specular?: number
     diffuse?: number
     ambient?: number
+    shiness?:number
+
   }
   plugin: "CommonShadowPlugin"
 }
 
 const defaultMaterial = {
   specular: 0.8,
-  diffuse: 4,
+  diffuse: 1,
   ambient: 0.8,
+  shiness:300.0
 }
 
 export class CommonShadowPlugin extends RendererPlugin {
@@ -163,6 +168,7 @@ export class CommonShadowPlugin extends RendererPlugin {
     this.uniforms.uSpecular(material.specular)
     this.uniforms.uDiffuse(material.diffuse)
     this.uniforms.uAmbient(material.ambient)
+    //this.uniforms.uShiness(material.shiness)
     this.uniforms.uShadowTexure(shadowTexture)
 
     gl.drawArrays(gl.TRIANGLES, 0, object.data.points)

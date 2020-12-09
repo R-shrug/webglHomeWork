@@ -84,7 +84,11 @@ export class SphereObject extends Container implements ICommonShadowObject, ISha
 
   plugin = CommonShadowPlugin.PluginName
   shadowRender = true
-
+  material= {
+    specular: 0.8,
+    diffuse: 4,
+    ambient: 0.8
+  }
   data = {
     positionBuffer: normalCircleVertexBuffer,
     normalBuffer: normalCircleVertexBuffer,
@@ -95,6 +99,7 @@ export class SphereObject extends Container implements ICommonShadowObject, ISha
 export class SolidShpereObject extends Container implements ISolidFaceObject {
 
   plugin = SolidFacePlugin.PluginName
+  
   data = {
     positionBuffer: normalCircleVertexBuffer,
     normalBuffer: normalCircleVertexBuffer,
