@@ -3,18 +3,15 @@ import { Camera, ControlledCamera } from "../../utils/core/camera"
 import { DepthTextureTarget, CanvasTarget } from "../../utils/core/renderTarget"
 import { RenderContext, Renderer } from "../../utils/core/render"
 import { Container } from "../../utils/core/displayObject"
-import { ShadowTexurePlugin } from "../../utils/plugins/ShadowTexture"
 import { resizeCanvas } from "../../utils/helpers/WebGlUtils"
-import { Vector3 } from "../../utils/math/Vector3"
 import { SphereObject } from "../../utils/shapes/Sphere"
 import { TextureSphereObject } from "../../utils/plugins/TextureSphere";
 import { TextureBase } from "../../utils/core/texture";
 import { LoadImageAsync } from "../../utils/helpers/asyncLoad";
-import { TextureCubeObject } from "../../utils/shapes/TextureCube"
 import { LightBall } from "./lightBall"
 import earthSrc from "../assets/earth.jpg"
 import "../../utils/draw/3D_model/index"
-
+import { ShadowTexurePlugin } from "../../utils/plugins/ShadowTexture"
 
 async function main() {
 
@@ -28,14 +25,16 @@ async function main() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   const stage = new Container()
-  const camera = new ControlledCamera(canvas, false)
+  const camera = new ControlledCamera(canvas, false, 7, 40)
 
   const lightBall = new LightBall(gl)
 
   camera
     .setViewPort(canvas.width / canvas.height)
-    .setPosition(0, 0, 20)
-    .setLookAt(0, 0, 0)
+    .setPosition(Math.sqrt(9), Math.sqrt(47), 6)
+    // .setPosition(-4, 4, 10)
+    .setLookAt(Math.sqrt(9), Math.sqrt(47), 0)
+  // .setLookAt(0, 0, Math.sqrt(79))
   const light = new Camera()
     .setViewPort(1, 0.5 * Math.PI)
     .setPosition(12, 0, 0)
@@ -43,11 +42,17 @@ async function main() {
 
   const earthTexture = new TextureBase(gl, await LoadImageAsync(earthSrc))
 
-  let ball = new TextureSphereObject(earthTexture)
+  let earth = new TextureSphereObject(earthTexture)
+  earth.position.set(0, 0, 0)
+  earth.scale.set(7, 7, 7)
+  earth.color.set(0x4cd1e0)
 
-  ball.position.set(0, 0, 0)
-  ball.scale.set(7, 7, 7)
-  ball.color.set(0x4cd1e0)
+  const ball = new SphereObject()
+  ball.color.set(0xc55d6e)
+  ball.position.set(Math.sqrt(9), Math.sqrt(47), 0)
+  ball.scale.set(0.5, 0.5, 0.5)
+  stage.addChild(ball)
+
 
   let sun = new SphereObject()
 
@@ -65,11 +70,9 @@ async function main() {
 
     let speed = <HTMLInputElement>document.getElementById("speed")
     lightBall.animate(dt, speed.value as unknown as number)
-    
-    light.position.set(20 * lightBall.sun.position.x, 20 * lightBall.sun.position.y, lightBall.position.z)
-    // light.setLookAt(20 * lightBall.sun.position.x, 20 * lightBall.sun.position.y, lightBall.position.z)
+    light.position.set(20 * lightBall.sun.position.x, 20 * lightBall.sun.position.y, 20 * lightBall.position.z)
+    light.setLookAt(0, 0, 0)
     document.body.style.backgroundImage = "linear-gradient(-" + lightBall.theta / (2 * Math.PI) * 360 + "deg, #cdd1d3,#1677b3,#131824 55%,#0B1013)"
-    console.log("linear-gradient(" + (0 - lightBall.theta / (2 * Math.PI) * 360) + "deg, #22a6f1,black 50%)")
     camera.update(dt)
     prev = now
   }
@@ -84,8 +87,7 @@ async function main() {
     shadowTexture: depthtarget.texture
   }
 
-  stage.addChild(ball)
-  // stage.addChild(sun)
+  stage.addChild(earth)
   stage.addChild(lightBall)
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
@@ -94,7 +96,7 @@ async function main() {
     requestAnimationFrame(tick)
     update(now)
     light.updateTransform()
-    // renderer.render(depthtarget, stage, context, true, ShadowTexurePlugin.PluginName)
+    renderer.render(depthtarget, stage, context, true, ShadowTexurePlugin.PluginName)
     renderer.render(canvastarget, stage, context, true)
   }
   requestAnimationFrame(tick)
