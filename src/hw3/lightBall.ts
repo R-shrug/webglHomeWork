@@ -38,10 +38,10 @@ export class LightBall extends Container {
     this.moon = new TextureSphereObject(this.moonTexture)
     this.moon.position.set(-12, 0, 0)
     this.moon.scale.set(0.5, 0.5, 0.5)
-    
+
     this.addChild(this.sun)
     this.addChild(this.moon)
-    
+
 
     this.inited = true
   }
@@ -50,7 +50,7 @@ export class LightBall extends Container {
 
   theta = 0
 
-  animate(now: number, speed = 1) {
+  animate(now: number, speed: number = 1) {
     if (!this.inited) return
     const n = now * 10 * speed
     this.theta = (this.theta + (n / 360 * 2 * Math.PI)) % (2 * Math.PI)
@@ -59,12 +59,12 @@ export class LightBall extends Container {
     //     this.sun.data.texture=this.moonTexture
     // else
     //     this.sun.data.texture=this.sunTexture
-    
+
     // this.sun.rotation.set(0,0,s,Math.cos(this.theta))
     console.log(this.theta)
 
-    this.sun.position.set(12*Math.cos(this.theta),12*Math.sin(this.theta),0)
-    this.moon.position.set(-12*Math.cos(this.theta),-12*Math.sin(this.theta),0)
+    this.sun.position.set(12 * Math.cos(this.theta), 12 * Math.sin(this.theta), 0)
+    this.moon.position.set(-12 * Math.cos(this.theta), -12 * Math.sin(this.theta), 0)
     this.setTransformDirty()
   }
 

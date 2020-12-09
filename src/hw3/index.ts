@@ -18,85 +18,86 @@ import "../../utils/draw/3D_model/index"
 
 async function main() {
 
-    let CanvaS = new Canvas("canvas")
+  let CanvaS = new Canvas("canvas")
 
-    const { gl } = CanvaS
+  const { gl } = CanvaS
 
-    const canvas = CanvaS.canvas
+  const canvas = CanvaS.canvas
 
-    gl.enable(gl.DEPTH_TEST)
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  gl.enable(gl.DEPTH_TEST)
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    const stage = new Container()
-    const camera = new ControlledCamera(canvas, false)
+  const stage = new Container()
+  const camera = new ControlledCamera(canvas, false)
 
-    const lightBall = new LightBall(gl)
+  const lightBall = new LightBall(gl)
 
-    camera
-        .setViewPort(canvas.width / canvas.height)
-        .setPosition(0, 0, 20)
-        .setLookAt(0, 0, 0)
-    const light = new Camera()
-        .setViewPort(1, 0.5 * Math.PI)
-        .setPosition(12, 0, 0)
-        .setLookAt(0, 0, 0)
+  camera
+    .setViewPort(canvas.width / canvas.height)
+    .setPosition(0, 0, 20)
+    .setLookAt(0, 0, 0)
+  const light = new Camera()
+    .setViewPort(1, 0.5 * Math.PI)
+    .setPosition(12, 0, 0)
+    .setLookAt(0, 0, 0)
 
-    const earthTexture = new TextureBase(gl, await LoadImageAsync(earthSrc))
+  const earthTexture = new TextureBase(gl, await LoadImageAsync(earthSrc))
 
-    let ball = new TextureSphereObject(earthTexture)
+  let ball = new TextureSphereObject(earthTexture)
 
-    ball.position.set(0, 0, 0)
-    ball.scale.set(7, 7, 7)
-    ball.color.set(0x4cd1e0)
+  ball.position.set(0, 0, 0)
+  ball.scale.set(7, 7, 7)
+  ball.color.set(0x4cd1e0)
 
-    let sun = new SphereObject()
+  let sun = new SphereObject()
 
-    sun.position.set(10, 10, 0)
-    sun.scale.set(0.2, 0.2, 0.2)
-    sun.color.set(0xe2c074)
+  sun.position.set(10, 10, 0)
+  sun.scale.set(0.2, 0.2, 0.2)
+  sun.color.set(0xe2c074)
 
-    let prev = performance.now() / 1000
+  let prev = performance.now() / 1000
 
-    function update(now: number) {
-        now = now / 1000
-        const dt = now - prev
-        if (resizeCanvas(gl, canvas))
-            camera.setViewPort(canvas.width / canvas.height)
+  function update(now: number) {
+    now = now / 1000
+    const dt = now - prev
+    if (resizeCanvas(gl, canvas))
+      camera.setViewPort(canvas.width / canvas.height)
 
-        let speed = document.getElementById("speed")
-        lightBall.animate(dt, speed.value)
-        light.position.set(20 * lightBall.sun.position.x, 20 * lightBall.sun.position.y, lightBall.position.z)
-        // light.setLookAt(20 * lightBall.sun.position.x, 20 * lightBall.sun.position.y, lightBall.position.z)
-        document.body.style.backgroundImage = "linear-gradient(-" + lightBall.theta / (2 * Math.PI) * 360 + "deg, #cdd1d3,#1677b3,#131824 55%,#0B1013)"
-        console.log("linear-gradient(" + (0 - lightBall.theta / (2 * Math.PI) * 360) + "deg, #22a6f1,black 50%)")
-        camera.update(dt)
-        prev = now
-    }
+    let speed = <HTMLInputElement>document.getElementById("speed")
+    lightBall.animate(dt, speed.value as unknown as number)
+    
+    light.position.set(20 * lightBall.sun.position.x, 20 * lightBall.sun.position.y, lightBall.position.z)
+    // light.setLookAt(20 * lightBall.sun.position.x, 20 * lightBall.sun.position.y, lightBall.position.z)
+    document.body.style.backgroundImage = "linear-gradient(-" + lightBall.theta / (2 * Math.PI) * 360 + "deg, #cdd1d3,#1677b3,#131824 55%,#0B1013)"
+    console.log("linear-gradient(" + (0 - lightBall.theta / (2 * Math.PI) * 360) + "deg, #22a6f1,black 50%)")
+    camera.update(dt)
+    prev = now
+  }
 
-    const renderer = new Renderer(gl)
-    const canvastarget = new CanvasTarget(gl)
-    const depthtarget = new DepthTextureTarget(gl, 4096, 4096)
+  const renderer = new Renderer(gl)
+  const canvastarget = new CanvasTarget(gl)
+  const depthtarget = new DepthTextureTarget(gl, 4096, 4096)
 
-    const context: RenderContext = {
-        camera,
-        light,
-        shadowTexture: depthtarget.texture
-    }
+  const context: RenderContext = {
+    camera,
+    light,
+    shadowTexture: depthtarget.texture
+  }
 
-    stage.addChild(ball)
-    // stage.addChild(sun)
-    stage.addChild(lightBall)
+  stage.addChild(ball)
+  // stage.addChild(sun)
+  stage.addChild(lightBall)
 
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-    function tick(now: number) {
-        requestAnimationFrame(tick)
-        update(now)
-        light.updateTransform()
-        // renderer.render(depthtarget, stage, context, true, ShadowTexurePlugin.PluginName)
-        renderer.render(canvastarget, stage, context, true)
-    }
+  function tick(now: number) {
     requestAnimationFrame(tick)
+    update(now)
+    light.updateTransform()
+    // renderer.render(depthtarget, stage, context, true, ShadowTexurePlugin.PluginName)
+    renderer.render(canvastarget, stage, context, true)
+  }
+  requestAnimationFrame(tick)
 }
 
 main()
