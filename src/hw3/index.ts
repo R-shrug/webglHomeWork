@@ -31,7 +31,7 @@ async function main() {
 
   camera
     .setViewPort(canvas.width / canvas.height)
-    .setPosition(Math.sqrt(9), Math.sqrt(47), 6)
+    .setPosition(1.3 * Math.sqrt(9), 1.3 * Math.sqrt(47), 6)
     // .setPosition(-4, 4, 10)
     .setLookAt(Math.sqrt(9), Math.sqrt(47), 0)
   // .setLookAt(0, 0, Math.sqrt(79))
