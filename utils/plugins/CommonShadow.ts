@@ -66,7 +66,7 @@ void main() {
 
     float specular = dot(normal, normalize(normalize(objToLight) + normalize(objToCamera)));
     if (specular < 0.0) specular = 0.0;
-    else specular = pow(specular,80.0);
+    else specular = pow(specular,100.0);
 
     bool lighted = isLighted();
 

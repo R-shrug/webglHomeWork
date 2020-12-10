@@ -50,7 +50,11 @@ export class TextureCubeObject extends Container implements ICommonShadowObject,
   plugin = CommonShadowPlugin.PluginName
   shadowRender = true
   data: ICommonShadowObject["data"]
-
+  material= {
+    specular: 0.8,
+    diffuse: 4,
+    ambient: 0.8
+  }
   constructor(texture: TextureBase) {
     super()
     this.data = {
