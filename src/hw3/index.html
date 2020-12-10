@@ -5,15 +5,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WebGl</title>
-  <input type="range" id="speed" min="0" max="4" step="0.1" value="1" onchange="num.value=this.value"/>
-	<output id="num" for="speed" >1</output>倍速
+  <input type="range" id="speed" min="0" max="4" step="0.1" value="1" onchange="num.value=this.value" />
+  <output id="num" for="speed">1</output>倍速
 
   <style>
+    @keyframes change {
+      0% {
+        background-color: linear-gradient(0deg, #cdd1d3, #1677b3, #131824 55%, #0B1013);
+      }
+
+      25% {
+        background-color: #000000;
+      }
+
+      50% {
+        background-color: linear-gradient(0deg, #cdd1d3, #1677b3, #131824 55%, #0B1013);
+      }
+
+      75% {
+        background-color: #000000;
+      }
+
+      100% {
+        background-color: linear-gradient(0deg, #cdd1d3, #1677b3, #131824 55%, #0B1013);
+      }
+    }
+
     body {
       margin: 0;
       width: 100vw;
       height: 100vh;
-      background-image: linear-gradient(0deg,#cdd1d3,#1677b3,#131824 55%,#0B1013);
+      animation-name: change;
+      animation-iteration-count: infinite;
+      animation-duration: 36s;
     }
 
     #canvas {

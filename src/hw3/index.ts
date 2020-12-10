@@ -142,7 +142,7 @@ const Zunit = new Vector3(0, 0, 1)
     light.position.set(20 * lightBall.sun.position.x, 20 * lightBall.sun.position.y, 20 * lightBall.position.z)
     light.setLookAt(0, 0, 0)
     
-    document.body.style.backgroundImage = "linear-gradient(-" + lightBall.theta / (2 * Math.PI) * 360 + "deg, #cdd1d3,#1677b3,#131824 55%,#0B1013)"
+    // document.body.style.backgroundImage = "linear-gradient(-" + lightBall.theta / (2 * Math.PI) * 360 + "deg, #cdd1d3,#1677b3,#131824 55%,#0B1013)"
     camera.update(dt)
     earth.rotation.setFromAxisAngle(Zunit, now * Math.PI)
     Robot.animate(now)
