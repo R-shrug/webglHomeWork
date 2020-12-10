@@ -44,7 +44,7 @@ export class LightBall extends Container {
     
     this.addChild(this.sun)
     this.addChild(this.moon)
-    
+
 
     this.inited = true
   }
@@ -54,7 +54,7 @@ export class LightBall extends Container {
   theta = 0
   thetb=0
 
-  animate(now: number, speed = 1) {
+  animate(now: number, speed: number = 1) {
     if (!this.inited) return
     const n = now * 10 * speed
     const m =now *2*speed
@@ -64,7 +64,7 @@ export class LightBall extends Container {
     //     this.sun.data.texture=this.moonTexture
     // else
     //     this.sun.data.texture=this.sunTexture
-    
+
     // this.sun.rotation.set(0,0,s,Math.cos(this.theta))
     console.log(this.theta)
 

@@ -69,22 +69,22 @@ Object.assign(Canvas.prototype, {
 
     attributes.a_position({ size: 3, buffer: positionBuffer })
     uniforms.u_color(transformRgba(color))
-    console.log(Matrix.of(
-      makeZToWMatrix(0)
-    ).multiply(
-      makeTranslation(...translation)
-    )
-      .multiply(
-        makeXRotation(rotation[0])
-      ).multiply(
-        makeYRotation(rotation[1])
-      ).multiply(
-        makeZRotation(rotation[2])
-      ).multiply(
-        makeScale(...scale)
-      ).multiply(
-        transition(...this.size)
-      ).value())
+    // console.log(Matrix.of(
+    //   makeZToWMatrix(0)
+    // ).multiply(
+    //   makeTranslation(...translation)
+    // )
+    //   .multiply(
+    //     makeXRotation(rotation[0])
+    //   ).multiply(
+    //     makeYRotation(rotation[1])
+    //   ).multiply(
+    //     makeZRotation(rotation[2])
+    //   ).multiply(
+    //     makeScale(...scale)
+    //   ).multiply(
+    //     transition(...this.size)
+    //   ).value())
     uniforms.u_matrix(
       Matrix.of(
         makeZToWMatrix(0)

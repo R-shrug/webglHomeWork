@@ -39,16 +39,25 @@ export class Camera {
   }
 
   setLookAt(x: number | Vector3, y?: number, z?: number) {
+    const arg = (typeof x === "number" ? new Vector3(x, y, z) : x)
+    if (this.target.x != arg.x || this.target.y != arg.y || this.target.z != arg.z) {
+      this.setControlledDirty()
+    }
     this.target = typeof x === "number" ? new Vector3(x, y, z) : x
-    this.rotation.setFromRotationMatrix(new Matrix4().lookAt(this.position, this.target, UpVector))
+    this.rotation.setFromRotationMatrix(new Matrix4().lookAt(this.position, this.target, new Vector3(...this.target.toArray().map(e => Math.abs(e))).normalize()))
     this.setTransformDirty()
     return this
   }
 
   private _transformDirty = true
+  protected _controlledDirty = true
+
   get transformDirty() { return this._transformDirty }
   setTransformDirty() {
     this._transformDirty = true
+  }
+  setControlledDirty() {
+    this._controlledDirty = true
   }
 
   viewTransformMatrix = new Matrix4()
@@ -67,7 +76,7 @@ export class Camera {
 }
 
 export class ControlledCamera extends Camera {
-  constructor(canvas: HTMLCanvasElement, movable: boolean) {
+  constructor(canvas: HTMLCanvasElement, movable: boolean, min?: number, max?: number) {
     super()
     this.input = new BaseInputHandler(canvas)
     this.input.keyEvent.add((state: any, event: any) => {
@@ -81,9 +90,13 @@ export class ControlledCamera extends Camera {
       }
     })
     this.movable = movable
+    this.min = min ? min : 5
+    this.max = max ? max : 1000
   }
   movable: boolean
   input: BaseInputHandler
+  min: number
+  max: number = 1000
 
   state = {
     up: false,
@@ -94,8 +107,20 @@ export class ControlledCamera extends Camera {
     right: false,
   }
 
+  setLookAt(x: number | Vector3, y?: number, z?: number) {
+    super.setLookAt(x, y, z)
+    if (this._controlledDirty) {
+      this.path = this.position.clone().sub(this.target)
+      this.front = new Vector3().crossVectors(this.path, this.target).normalize()
+      this._controlledDirty = false
+    }
+    return this
+  }
+
   lastMousePosition: { x: number, y: number } | null = null
-  totalMousePosition: { x: number, y: number } = { x: 0, y: 0 }
+
+  path: Vector3 = new Vector3().sub(this.target)
+  front: Vector3 = new Vector3().crossVectors(this.path, this.target).normalize()
 
   update(seconds: number) {
     if (this.movable) {
@@ -104,7 +129,6 @@ export class ControlledCamera extends Camera {
       const left = up.clone().cross(front)
       this.position.addScaledVector(front, (<any>this.state.front - <any>this.state.back) * seconds * 10)
       this.position.addScaledVector(up, (<any>this.state.up - <any>this.state.down) * seconds * 10)
-      this.position.addScaledVector(left, (<any>this.state.left - <any>this.state.right) * seconds * 10)
 
       if (this.input.state.rightholding) {
         if (this.lastMousePosition) {
@@ -121,21 +145,44 @@ export class ControlledCamera extends Camera {
         this.lastMousePosition = null
       }
     } else {
-      const front = new Vector3(0, 0, -1).applyQuaternion(this.rotation).setZ(0).normalize()
-      const up = new Vector3(0, 0, 1)
-      const left = up.clone().cross(front)
-      this.position.applyAxisAngle(new Vector3(0, 0, 1), (<any>this.state.left - <any>this.state.right) * seconds * 10)
-      this.position.applyAxisAngle(new Vector3(0, 1, 0), -(<any>this.state.up - <any>this.state.down) * seconds * 10)
-      console.log(this.position.toArray())
-      if (((this.position.x - this.target.x) ** 2 + (this.position.y - this.target.y) ** 2 > 9) || (<any>this.state.front - <any>this.state.back) < 0)
-        this.position.addScaledVector(front, (<any>this.state.front - <any>this.state.back) * seconds * 100)
+      this.position.applyAxisAngle(this.target.clone().normalize(), (<any>this.state.left - <any>this.state.right) * seconds * 2)
+      if (!!(<any>this.state.left - <any>this.state.right) || !!(<any>this.state.up - <any>this.state.down)) {
+        this.setControlledDirty()
+      }
+      const eps = 0.1
+      const pClone = this.position.clone().normalize()
+      const tClone = this.target.clone().normalize()
+      if (!(Math.abs(pClone.x - tClone.x) < eps
+        && Math.abs(pClone.y - tClone.y) < eps
+        && Math.abs(pClone.z - tClone.z) < eps)
+        || <any>this.state.front - <any>this.state.back < 0) {
+        this.position.applyAxisAngle(this.front, (<any>this.state.front - <any>this.state.back) * seconds * 2)
+        const newPath = this.position.clone().sub(this.target)
+        this.position.sub(newPath).add(newPath.setLength(this.path.length()))
+      }
+
+      if (((this.path.x ** 2 + this.path.y ** 2 + this.path.z ** 2 > this.min ** 2)
+        || (<any>this.state.up - <any>this.state.down) < 0) &&
+        ((this.path.x ** 2 + this.path.y ** 2 + this.path.z ** 2 < this.max ** 2)
+          || (<any>this.state.up - <any>this.state.down) > 0))
+        this.position.sub(this.path.clone().normalize().multiplyScalar((<any>this.state.up - <any>this.state.down) * seconds * 100))
       if (this.input.state.rightholding) {
         if (this.lastMousePosition) {
           const dx = this.input.state.x - this.lastMousePosition.x
           const dy = this.input.state.y - this.lastMousePosition.y
-          this.position.applyAxisAngle(new Vector3(0, 0, 1), -dx / 150)
-          this.position.applyAxisAngle(new Vector3(0, 1, 0), -dy / 150)
-          console.log(this.position)
+          this.position.applyAxisAngle(this.target.clone().normalize(), -dx / 150)
+          if (!!(-dx / 150)) {
+            this.setControlledDirty()
+          }
+
+          if (!(Math.abs(pClone.x - tClone.x) < eps
+            && Math.abs(pClone.y - tClone.y) < eps
+            && Math.abs(pClone.z - tClone.z) < eps)
+            || dy < 0) {
+            this.position.applyAxisAngle(this.front, dy / 150)
+            const newPath = this.position.clone().sub(this.target)
+            this.position.sub(newPath).add(newPath.setLength(this.path.length()))
+          }
         }
         this.lastMousePosition = { ...this.input.state }
       } else {
