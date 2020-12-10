@@ -42,53 +42,66 @@ export class robot extends Container {
     con.scale.set(0.2, 0.2, 0.25)
     con.color.set(0xf0f8ff)
     con.rotation.setFromAxisAngle(Zunit, Math.PI / 2)
+    con.material.specular = 0.8
+    con.material.diffuse = 0.3
+    con.material.ambient=0.5
     this.head.addChild(con)
 
   
-    const angle = new SphereObject()
-    angle.color.set(0xf0f8ff)
-    angle.scale.set(0.05, 0.05, 0.1)
-    angle.position.set(0.12, 0, 0.25)
-    angle.rotation.setFromAxisAngle(Xunit, -Math.PI / 10)
+    this.angle = new SphereObject()
+    this.angle.color.set(0xf0f8ff)
+    this.angle.scale.set(0.05, 0.05, 0.1)
+    this.angle.position.set(0.12, 0, 0.25)
+    this.angle.rotation.setFromAxisAngle(Xunit, -Math.PI / 10)
     //angle.rotation.setFromAxisAngle(Yunit, Math.PI / 10)
-    this.head.addChild(angle)
+    this.angle.material.specular = 0.8
+    this.angle.material.diffuse = 0.3
+    this.angle.material.ambient =0.5
+    this.head.addChild(this.angle)
    
-   const miniangle = new SphereObject()
-     miniangle.color.set(0x00bfff)
-     miniangle.scale.set(0.03, 0.03, 0.2)
-     miniangle.position.set(0.12, 0.01, 0.37)
-    miniangle.rotation.setFromAxisAngle(Xunit, -Math.PI / 11)
+   this.miniangle = new SphereObject()
+   this.miniangle.color.set(0x00bfff)
+   this.miniangle.scale.set(0.03, 0.03, 0.2)
+   this.miniangle.position.set(0.12, 0.01, 0.37)
+   this.miniangle.rotation.setFromAxisAngle(Xunit, -Math.PI / 11)
     //miniangle.rotation.setFromAxisAngle(Yunit, Math.PI / 11)
-     this.head.addChild(miniangle)  
+    this. miniangle.material.ambient=1
+     this.head.addChild(this.miniangle)  
 
-    const angle1 = new SphereObject()
-    angle1.color.set(0xf0f8ff)
-    angle1.scale.set(0.05, 0.05, 0.1)
-    angle1.position.set(-0.12, 0, 0.25)
-    angle1.rotation.setFromAxisAngle(Xunit,-Math.PI / 10)
-    this.head.addChild(angle1)
+     this. angle1 = new SphereObject()
+     this.angle1.color.set(0xf0f8ff)
+     this.angle1.scale.set(0.05, 0.05, 0.1)
+     this.angle1.position.set(-0.12, 0, 0.25)
+     this.angle1.rotation.setFromAxisAngle(Xunit, -Math.PI / 10)
+     this.angle1.material.specular = 0.8
+    this.angle1.material.diffuse = 0.3
+    this.angle1.material.ambient =0.5
+    this.head.addChild(this.angle1)
   
-    const miniangle1 = new SphereObject()
-    miniangle1.color.set(0x00bfff)
-    miniangle1.scale.set(0.03, 0.03, 0.2)
-    miniangle1.position.set(-0.12, 0.01, 0.37)
-    miniangle1.rotation.setFromAxisAngle(Xunit,-Math.PI / 11)
-    this.head.addChild(miniangle1)  
+    this.miniangle1 = new SphereObject()
+    this.miniangle1.color.set(0x00bfff)
+    this.miniangle1.scale.set(0.03, 0.03, 0.2)
+    this.miniangle1.position.set(-0.12, 0.01, 0.37)
+    this.miniangle1.rotation.setFromAxisAngle(Xunit,-Math.PI / 11)
+    this.miniangle1.material.ambient=1
+    this.head.addChild(this.miniangle1)  
 
 
-    const legl = new SphereObject()
-    legl.color.set(0x00bfff)
-    legl.scale.set(0.02, 0.02, 0.05)
-    legl.position.set(-0.12, 0, -0.25)
-    legl.rotation.setFromAxisAngle(Xunit,Math.PI / 10)
-    this.head.addChild(legl)
+    this.legl = new SphereObject()
+    this.legl.color.set(0x00bfff)
+    this.legl.scale.set(0.02, 0.02, 0.06)
+    this.legl.position.set(-0.12, 0, -0.25)
+    this.legl.rotation.setFromAxisAngle(Xunit,Math.PI / 10)
+    this.legl.material.ambient=1
+    this.head.addChild(this.legl)
     
-    const legr = new SphereObject()
-    legr.color.set(0x00bfff)
-    legr.scale.set(0.02, 0.02, 0.05)
-    legr.position.set(0.12, 0, -0.25)
-    legr.rotation.setFromAxisAngle(Xunit,Math.PI / 10)
-    this.head.addChild(legr) 
+    this.legr = new SphereObject()
+    this.legr.color.set(0x00bfff)
+    this.legr.scale.set(0.02, 0.02, 0.06)
+    this.legr.position.set(0.12, 0, -0.25)
+    this.legr.rotation.setFromAxisAngle(Xunit, Math.PI / 10)
+    this.legr.material.ambient=1
+    this.head.addChild(this.legr) 
 
     
 
@@ -110,7 +123,10 @@ export class robot extends Container {
     if (!this.inited) return
     const n = now * 10
     this.position.set(4, 6.2, Math.sin(Math.PI * n / 12) / 2 - 1)
-    
+    this.miniangle.position.set(0.12, 0.01, 0.44 - Math.sin(Math.PI * n / 12) * 0.05)
+    this.angle.position.set(0.12, 0, 0.32 - Math.sin(Math.PI * n / 12) * 0.05)
+    this.miniangle1.position.set(-0.12, 0.01, 0.44 - Math.sin(Math.PI * n / 12) * 0.05)
+    this.angle1.position.set(-0.12, 0, 0.32 -Math.sin(Math.PI * n / 12) * 0.05)
     this.setTransformDirty()
   }
 

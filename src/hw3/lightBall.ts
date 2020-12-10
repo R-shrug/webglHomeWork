@@ -33,7 +33,7 @@ export class LightBall extends Container {
 
     this.sun = new TextureSphereObject(this.sunTexture)
     this.sun.position.set(12, 0, 0)
-    this.sun.scale.set(0.5, 0.5, 0.5)
+    this.sun.scale.set(0.3, 0.3, 0.3)
     this.sun.material.ambient = 1
     this.sun.material.diffuse = 0.8
     this.sun.material.specular=0.3
@@ -68,8 +68,8 @@ export class LightBall extends Container {
     // this.sun.rotation.set(0,0,s,Math.cos(this.theta))
     //console.log(this.theta)
 
-    this.sun.position.set(12*Math.cos(this.theta),12*Math.sin(this.theta),0)
-    this.moon.position.set(-12*Math.cos(this.thetb),-12*Math.sin(this.thetb),0)
+    this.sun.position.set(18*Math.cos(this.theta),18*Math.sin(this.theta),0)
+    this.moon.position.set(-18*Math.cos(this.thetb),-18*Math.sin(this.thetb),0)
     this.setTransformDirty()
   }
 
