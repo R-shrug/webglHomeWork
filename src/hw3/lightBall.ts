@@ -33,7 +33,7 @@ export class LightBall extends Container {
 
     this.sun = new TextureSphereObject(this.sunTexture)
     this.sun.position.set(12, 0, 0)
-    this.sun.scale.set(0.5, 0.5, 0.5)
+    this.sun.scale.set(0.3, 0.3, 0.3)
     this.sun.material.ambient = 1
     this.sun.material.diffuse = 0.8
     this.sun.material.specular=0.3

@@ -113,9 +113,9 @@ export class TextureSphereObject extends Container implements ICommonShadowObjec
   shadowRender = true
   data: ICommonShadowObject["data"]
   material= {
-    specular:0.8,
-    diffuse: 4,
-    ambient: 0.8
+    specular:0.2,
+    diffuse: 1.5,
+    ambient: 0.4
   }
   constructor(texture: TextureBase) {
     super()
