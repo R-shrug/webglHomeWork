@@ -53,7 +53,6 @@ export class robot extends Container {
     this.angle.scale.set(0.05, 0.05, 0.1)
     this.angle.position.set(0.12, 0, 0.25)
     this.angle.rotation.setFromAxisAngle(Xunit, -Math.PI / 10)
-    //angle.rotation.setFromAxisAngle(Yunit, Math.PI / 10)
     this.angle.material.specular = 0.8
     this.angle.material.diffuse = 0.3
     this.angle.material.ambient =0.5
@@ -64,7 +63,6 @@ export class robot extends Container {
    this.miniangle.scale.set(0.03, 0.03, 0.2)
    this.miniangle.position.set(0.12, 0.01, 0.37)
    this.miniangle.rotation.setFromAxisAngle(Xunit, -Math.PI / 11)
-    //miniangle.rotation.setFromAxisAngle(Yunit, Math.PI / 11)
     this. miniangle.material.ambient=1
      this.head.addChild(this.miniangle)  
 
