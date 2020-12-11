@@ -52,6 +52,7 @@ bool isLighted() {
     vec3 projectedPos = inLightPosition.xyz / inLightPosition.w / 2.0 + 0.5;
     float depth = projectedPos.z - 0.0002;
     float mapdepth = texture2D(uShadowTexure, projectedPos.xy).r;
+    // return true;
     return depth <= mapdepth;
 }
 

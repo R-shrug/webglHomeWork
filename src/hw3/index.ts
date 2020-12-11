@@ -106,7 +106,8 @@ async function main() {
     .setPosition(1.3 * Math.sqrt(9), 1.3 * Math.sqrt(47), 6)
     .setLookAt(4, 6.2, -1)
   const light = new Camera()
-    .setViewPort(1, 0.5 * Math.PI)
+    // .setViewPort(1, 0.6 * Math.PI)
+    .setViewPort(1, 0.85 * Math.PI)
     .setPosition(12, 0, 0)
     .setLookAt(0, 0, 0)
 
@@ -122,7 +123,8 @@ async function main() {
     const sv = speed.value as unknown as number
     lightBall.animate(dt, sv)
 
-    light.position.set(0.8 * lightBall.sun.position.x, 0.8 * lightBall.sun.position.y, 0.8 * lightBall.position.z)
+    // light.position.set(2.4 * lightBall.sun.position.x, 2.4 * lightBall.sun.position.y, 2.4 * lightBall.position.z)
+    light.position.set(lightBall.sun.position.x, lightBall.sun.position.y, lightBall.position.z)
     light.setLookAt(0, 0, 0)
     state = (state + (dt * 24 / (36 / sv))) % 24
     const result = getColor(state)
