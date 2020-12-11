@@ -39,7 +39,7 @@ export class robot extends Container {
     this.head = new Container()
     const con = new TextureSphereObject(headTexture)
     con.position.set(0, 0, 0)
-    con.scale.set(0.2, 0.2, 0.25)
+    con.scale.set(0.22, 0.22, 0.22)
     con.color.set(0xf0f8ff)
     con.rotation.setFromAxisAngle(Zunit, Math.PI / 2)
     con.material.specular = 0.8

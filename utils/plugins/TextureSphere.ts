@@ -115,7 +115,7 @@ export class TextureSphereObject extends Container implements ICommonShadowObjec
   material= {
     specular:0.2,
     diffuse: 1.5,
-    ambient: 0.4
+    ambient: 0.8
   }
   constructor(texture: TextureBase) {
     super()
