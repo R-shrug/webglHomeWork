@@ -4,7 +4,7 @@ import { TextureSphereObject } from "../../utils/plugins/TextureSphere";
 import { LoadImageAsync } from "../../utils/helpers/asyncLoad";
 import { SphereObject } from "../../utils/shapes/Sphere";
 import { Vector3 } from "../../utils/math/Vector3";
-import headSrc from "../assets/nono.png";
+import headSrc from "../assets/nono1.jpg";
 
 
 
@@ -28,6 +28,8 @@ export class robot extends Container {
   miniangle1!: SphereObject;
   legl!: SphereObject;
   legr!: SphereObject;
+  nose!: SphereObject;
+  
   
 
  
@@ -100,6 +102,15 @@ export class robot extends Container {
     this.legr.rotation.setFromAxisAngle(Xunit, Math.PI / 10)
     this.legr.material.ambient=1
     this.head.addChild(this.legr) 
+
+    this.nose = new SphereObject()
+    this.nose.color.set(0xcc0000)
+    this.nose.scale.set(0.05, 0.05, 0.05)
+    this.nose.position.set(0.03, -0.27, 0)
+    this.nose.rotation.setFromAxisAngle(Xunit, -Math.PI / 2)
+    this.nose.material.ambient=1
+    this.head.addChild(this.nose) 
+    
 
     
 

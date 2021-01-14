@@ -5,8 +5,9 @@ import { LoadImageAsync } from "../../utils/helpers/asyncLoad";
 import { SphereObject } from "../../utils/shapes/Sphere";
 import { Vector3 } from "../../utils/math/Vector3";
 import headSrc from "../assets/nono.png";
-import earthSrc from "../assets/mountain.jpg"
-import ironSrc from "../assets/ironcube.jpg"
+import earthSrc from "../assets/snow1.jpg"
+import ironSrc from "../assets/mao.jpg"
+import boxSrc from "../assets/box.png"
 import { TextureCubeObject } from "../../utils/shapes/TextureCube";
 
 
@@ -24,15 +25,18 @@ export class theEarth extends Container {
   //originPosition: Vector3 = new Vector3(0, 0, 0)
 
   earth!: Container;
+  box!: Container;
 
 
   async load(gl: WebGLRenderingContext) {
     const earthTexture = new TextureBase(gl, await LoadImageAsync(earthSrc))
     const ironTexture = new TextureBase(gl, await LoadImageAsync(ironSrc))
+    const boxTexture = new TextureBase(gl, await LoadImageAsync(boxSrc)) 
+   // const testTexture = new TextureBase(gl, await LoadImageAsync(testsrc))
     this.earth = new TextureSphereObject(earthTexture)
     this.earth.position.set(0, 0, 0)
     this.earth.scale.set(7, 7, 7)
-    this.earth.color.set(0x4cd1e0)
+    this.earth.color.set(0xffffff)
 
 
 
@@ -49,6 +53,7 @@ export class theEarth extends Container {
     mountain1.scale.set(0.3, 1, 0.3)
     mountain1.color.set(0x4cd1e0)
     mountain1.rotation.setFromAxisAngle(Xunit, -Math.PI / 4)
+    
     this.earth.addChild(mountain1)
 
     let mountain2 = new TextureSphereObject(earthTexture)
@@ -64,25 +69,32 @@ export class theEarth extends Container {
     let ironcube = new TextureCubeObject(ironTexture)
     ironcube.position.set(0.5, 0.5, 0)
     ironcube.scale.set(0.4, 0.1, 0.1)
-    ironcube.color.set(0x4cd1e0)
+    ironcube.color.set(0x4ffffff)
     //ironcube.rotation.setFromAxisAngle(Yunit, -Math.PI / 3)
     //ironcube.rotation.setFromAxisAngle(Xunit, -Math.PI/2 ) 
     ironcube.rotation.setFromAxisAngle(Zunit, Math.PI / 4)
     ironcube.material.ambient = 0.2
-    ironcube.material.specular = 2
-    ironcube.material.diffuse = 4
+    ironcube.material.specular = 0.5
+    ironcube.material.diffuse = 0.7
     this.earth.addChild(ironcube)
 
 
     let ironcube1 = new TextureCubeObject(ironTexture)
     ironcube1.position.set(0.5, 0.38, 0)
     ironcube1.scale.set(0.6, 0.1, 0.1)
-    ironcube1.color.set(0x4cd1e0)
+    ironcube1.color.set(0xffffff)
     ironcube1.rotation.setFromAxisAngle(Zunit, Math.PI / 4)
     ironcube1.material.ambient = 0.2
-    ironcube1.material.specular = 2
-    ironcube1.material.diffuse = 4
+    ironcube1.material.specular = 0.5
+    ironcube1.material.diffuse = 0.7
     this.earth.addChild(ironcube1)
+
+     this.box = new TextureCubeObject(boxTexture)
+     this.box.position.set(0.62, -0.7, 0.4)
+    this.box.scale.set(0.15, 0.15, 0.15)
+    this.box.color.set(0xffffff)
+    this.box.rotation.setFromAxisAngle(Zunit, Math.PI / 4)
+    this.earth.addChild(this.box)
 
     this.addChild(this.earth)
 
