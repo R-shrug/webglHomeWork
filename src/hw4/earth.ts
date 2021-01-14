@@ -5,8 +5,9 @@ import { LoadImageAsync } from "../../utils/helpers/asyncLoad";
 import { SphereObject } from "../../utils/shapes/Sphere";
 import { Vector3 } from "../../utils/math/Vector3";
 import headSrc from "../assets/nono.png";
-import earthSrc from "../assets/mountain.jpg"
-import ironSrc from "../assets/ironcube.jpg"
+import earthSrc from "../assets/snow1.jpg"
+import ironSrc from "../assets/mao.jpg"
+import boxSrc from "../assets/box.png"
 import { TextureCubeObject } from "../../utils/shapes/TextureCube";
 
 
@@ -30,6 +31,7 @@ export class theEarth extends Container {
   async load(gl: WebGLRenderingContext) {
     const earthTexture = new TextureBase(gl, await LoadImageAsync(earthSrc))
     const ironTexture = new TextureBase(gl, await LoadImageAsync(ironSrc))
+    const boxTexture = new TextureBase(gl, await LoadImageAsync(boxSrc)) 
    // const testTexture = new TextureBase(gl, await LoadImageAsync(testsrc))
     this.earth = new TextureSphereObject(earthTexture)
     this.earth.position.set(0, 0, 0)
@@ -86,6 +88,13 @@ export class theEarth extends Container {
     ironcube1.material.specular = 0.5
     ironcube1.material.diffuse = 0.7
     this.earth.addChild(ironcube1)
+
+     this.box = new TextureCubeObject(boxTexture)
+     this.box.position.set(0.62, -0.7, 0.4)
+    this.box.scale.set(0.15, 0.15, 0.15)
+    this.box.color.set(0xffffff)
+    this.box.rotation.setFromAxisAngle(Zunit, Math.PI / 4)
+    this.earth.addChild(this.box)
 
     this.addChild(this.earth)
 
