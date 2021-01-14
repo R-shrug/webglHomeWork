@@ -1,8 +1,11 @@
 {
   "scripts": {
+    "dev":"npx parcel src/index.html",
     "hw1": "npx parcel src/hw1/index.html",
     "hw2": "npx parcel src/hw2/index.html",
-    "hw3": "npx parcel src/hw3/index.html"
+    "hw3": "npx parcel src/hw3/index.html",
+    "hw4": "npx parcel src/hw4/index.html",
+    "hw5": "npx parcel src/hw5/index.html"
   },
   "dependencies": {
     "parcel": "^1.12.4"
